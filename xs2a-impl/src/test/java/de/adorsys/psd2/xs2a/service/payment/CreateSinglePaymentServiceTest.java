@@ -119,7 +119,7 @@ public class CreateSinglePaymentServiceTest {
     }
 
     @Test
-    public void success_initiate_single_payment() {
+    public void createPayment_success() {
         //When
         ResponseObject<SinglePaymentInitiationResponse> actualResponse = createSinglePaymentService.createPayment(buildSinglePayment(), PARAM, TPP_INFO);
 
@@ -130,7 +130,7 @@ public class CreateSinglePaymentServiceTest {
     }
 
     @Test
-    public void initiate_payment_spi_fail() {
+    public void createPayment_wrongPsuData_fail() {
         // Given
         String errorMessagesString = ERROR_MESSAGE_TEXT.toString().replace("[", "").replace("]", "");
         PaymentInitiationParameters param = buildPaymentInitiationParameters();
@@ -146,7 +146,7 @@ public class CreateSinglePaymentServiceTest {
     }
 
     @Test
-    public void createPayment_xs2aPisCommonPaymentMapper_mapToXs2aPisCommonPayment_fail() {
+    public void createPayment_emptyPaymentId_fail() {
         // Given
         when(xs2aPisCommonPaymentMapper.mapToXs2aPisCommonPayment(PIS_COMMON_PAYMENT_RESPONSE, PARAM.getPsuData()))
             .thenReturn(PIS_COMMON_PAYMENT_FAIL);
@@ -221,10 +221,6 @@ public class CreateSinglePaymentServiceTest {
         reference.setCurrency(EUR_CURRENCY);
         reference.setAspspAccountId(accountId);
         return reference;
-    }
-
-    private Xs2aPisCommonPayment buildXs2aPisCommonPayment() {
-        return new Xs2aPisCommonPayment(PAYMENT_ID, PSU_DATA);
     }
 
     private PaymentInitiationParameters buildPaymentInitiationParameters() {

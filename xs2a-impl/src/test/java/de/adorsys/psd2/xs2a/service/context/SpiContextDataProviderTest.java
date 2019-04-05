@@ -26,8 +26,8 @@ public class SpiContextDataProviderTest {
     private final static UUID X_REQUEST_ID = UUID.randomUUID();
     private static final PsuIdData PSU_DATA = new PsuIdData("psuId", "psuIdType", "psuCorporateId", "psuCorporateIdType");
     private static final SpiPsuData SPI_PSU_DATA = new SpiPsuData("psuId", "psuIdType", "psuCorporateId", "psuCorporateIdType");
-    private static final SpiContextData SPI_CONTEXT_DATA = getSpiContextData(null);
-    private static final SpiContextData SPI_CONTEXT_DATA_WITH_PSU_DATA = getSpiContextData(SPI_PSU_DATA);
+    private static final SpiContextData SPI_CONTEXT_DATA = buildSpiContextData(null);
+    private static final SpiContextData SPI_CONTEXT_DATA_WITH_PSU_DATA = buildSpiContextData(SPI_PSU_DATA);
 
     @InjectMocks
     private SpiContextDataProvider spiContextDataProvider;
@@ -81,8 +81,7 @@ public class SpiContextDataProviderTest {
         return tppInfo;
     }
 
-    private static SpiContextData getSpiContextData(SpiPsuData spiPsuData) {
-        SpiContextData spiContextData = new SpiContextData(spiPsuData, TPP_INFO, X_REQUEST_ID);
-        return spiContextData;
+    private static SpiContextData buildSpiContextData(SpiPsuData spiPsuData) {
+        return new SpiContextData(spiPsuData, TPP_INFO, X_REQUEST_ID);
     }
 }

@@ -32,7 +32,6 @@ import de.adorsys.psd2.xs2a.domain.ResponseObject;
 import de.adorsys.psd2.xs2a.domain.Xs2aAmount;
 import de.adorsys.psd2.xs2a.domain.consent.Xs2aCreatePisAuthorisationResponse;
 import de.adorsys.psd2.xs2a.domain.consent.Xs2aPisCommonPayment;
-import de.adorsys.psd2.xs2a.domain.pis.CommonPayment;
 import de.adorsys.psd2.xs2a.domain.pis.PaymentInitiationParameters;
 import de.adorsys.psd2.xs2a.domain.pis.PeriodicPayment;
 import de.adorsys.psd2.xs2a.domain.pis.PeriodicPaymentInitiationResponse;
@@ -121,7 +120,7 @@ public class CreatePeriodicPaymentTest {
     }
 
     @Test
-    public void success_initiate_periodic_payment() {
+    public void createPayment_success() {
         //When
         ResponseObject<PeriodicPaymentInitiationResponse> actualResponse = createPeriodicPaymentService.createPayment(buildPeriodicPayment(), buildPaymentInitiationParameters(), buildTppInfo());
 
@@ -132,7 +131,7 @@ public class CreatePeriodicPaymentTest {
     }
 
     @Test
-    public void initiate_periodic_payment_spi_fail() {
+    public void createPayment_wrongPsuData_fail() {
         // Given
         String errorMessagesString = ERROR_MESSAGE_TEXT.toString().replace("[", "").replace("]", "");
         PaymentInitiationParameters param = buildPaymentInitiationParameters();
@@ -148,7 +147,7 @@ public class CreatePeriodicPaymentTest {
     }
 
     @Test
-    public void createPayment_xs2aPisCommonPaymentMapper_mapToXs2aPisCommonPayment_fail() {
+    public void createPayment_emptyPaymentId_fail() {
         // Given
         when(xs2aPisCommonPaymentMapper.mapToXs2aPisCommonPayment(PIS_COMMON_PAYMENT_RESPONSE, PARAM.getPsuData()))
             .thenReturn(PIS_COMMON_PAYMENT_FAIL);
@@ -248,16 +247,6 @@ public class CreatePeriodicPaymentTest {
         tppInfo.setTppRoles(Collections.singletonList(TppRole.PISP));
         tppInfo.setAuthorityId("authorityId");
         return tppInfo;
-    }
-
-    private CommonPayment buildCommonPayment() {
-        CommonPayment request = new CommonPayment();
-        request.setPaymentType(PaymentType.SINGLE);
-        request.setPaymentProduct("sepa-credit-transfers");
-        request.setPaymentData(new byte[16]);
-        request.setTppInfo(TPP_INFO);
-
-        return request;
     }
 
     private PeriodicPaymentInitiationResponse buildSpiErrorForPeriodicPayment() {

@@ -116,7 +116,7 @@ public class CreateCommonPaymentServiceTest {
     }
 
     @Test
-    public void success_initiate_create_Payment() {
+    public void createPayment_success() {
         //When
         ResponseObject<PaymentInitiationResponse> actualResponse = createCommonPaymentService.createPayment(COMMON_PAYMENT, buildPaymentInitiationParameters(), TPP_INFO);
 
@@ -127,7 +127,7 @@ public class CreateCommonPaymentServiceTest {
     }
 
     @Test
-    public void initiate_payment_spi_fail() {
+    public void createPayment_wrongPsuData_fail() {
         // Given
         String errorMessagesString = ERROR_MESSAGE_TEXT.toString().replace("[", "").replace("]", "");
 
@@ -144,7 +144,7 @@ public class CreateCommonPaymentServiceTest {
     }
 
     @Test
-    public void createPayment_xs2aPisCommonPaymentMapper_mapToXs2aPisCommonPayment_fail() {
+    public void createPayment_emptyPaymentId_fail() {
         // Given
         when(xs2aPisCommonPaymentMapper.mapToXs2aPisCommonPayment(PIS_COMMON_PAYMENT_RESPONSE, PSU_DATA))
             .thenReturn(PIS_COMMON_PAYMENT_FAIL);
