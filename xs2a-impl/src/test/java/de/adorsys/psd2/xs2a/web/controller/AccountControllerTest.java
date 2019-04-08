@@ -23,7 +23,6 @@ import de.adorsys.psd2.model.AccountList;
 import de.adorsys.psd2.model.AccountReport;
 import de.adorsys.psd2.model.ReadAccountBalanceResponse200;
 import de.adorsys.psd2.xs2a.component.JsonConverter;
-import de.adorsys.psd2.xs2a.core.profile.AccountReference;
 import de.adorsys.psd2.xs2a.domain.*;
 import de.adorsys.psd2.xs2a.domain.account.*;
 import de.adorsys.psd2.xs2a.domain.code.BankTransactionCode;
@@ -46,11 +45,12 @@ import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.lang.Exception;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.Currency;
+import java.util.List;
 
 import static de.adorsys.psd2.xs2a.domain.TppMessageInformation.of;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -89,10 +89,10 @@ public class AccountControllerTest {
     private ResponseErrorMapper responseErrorMapper;
 
     @Before
-    public void setUp() throws Exception {
-        when(accountService.getAccountList(anyString(), anyBoolean())).thenReturn(getXs2aAccountDetailsList());
+    public void setUp() {
+        when(accountService.getAccountList(anyString(), anyBoolean())).thenReturn(getXs2aAccountListHolder());
         when(accountService.getBalancesReport(anyString(), anyString())).thenReturn(getBalanceReport());
-        when(accountService.getAccountDetails(anyString(), any(), anyBoolean())).thenReturn(getXs2aAccountDetails());
+        when(accountService.getAccountDetails(anyString(), any(), anyBoolean())).thenReturn(getXs2aAccountDetailsHolder());
         when(accountService.getTransactionDetails(anyString(), anyString(), anyString())).thenReturn(buildTransaction());
     }
 
@@ -328,16 +328,14 @@ public class AccountControllerTest {
         assertThat(result).isEqualTo(expectedResult);
     }
 
-    private ResponseObject<Map<String, List<Xs2aAccountDetails>>> getXs2aAccountDetailsList() {
+    private ResponseObject<Xs2aAccountListHolder> getXs2aAccountListHolder() {
         List<Xs2aAccountDetails> accountDetails = Collections.singletonList(
             new Xs2aAccountDetails(ASPSP_ACCOUNT_ID, "33333-999999999", "DE371234599997", null, null, null,
                                    null, Currency.getInstance("EUR"), "Schmidt", null,
                                    CashAccountType.CACC, AccountStatus.ENABLED, "GENODEF1N02", "", Xs2aUsageType.PRIV, "", null));
-        Map<String, List<Xs2aAccountDetails>> result = new HashMap<>();
-        result.put("accountList", accountDetails);
-        return ResponseObject.<Map<String, List<Xs2aAccountDetails>>>builder()
-                   .body(result).build();
-
+        Xs2aAccountListHolder xs2aAccountListHolder = new Xs2aAccountListHolder(accountDetails, null);
+        return ResponseObject.<Xs2aAccountListHolder>builder()
+                   .body(xs2aAccountListHolder).build();
     }
 
     private ResponseObject<AccountList> createAccountDetailsList(String path) throws IOException {
@@ -346,7 +344,13 @@ public class AccountControllerTest {
                    .body(details).build();
     }
 
-    private ResponseObject<Map<String, List<Xs2aAccountDetails>>> buildAccountDetailsListWithError(MessageError messageError) throws IOException {
+    private ResponseObject<Xs2aAccountDetailsHolder> getXs2aAccountDetailsHolder() {
+        List<Xs2aAccountDetails> accountDetailsList = getXs2aAccountListHolder().getBody().getAccountDetails();
+        Xs2aAccountDetailsHolder xs2aAccountDetailsHolder = new Xs2aAccountDetailsHolder(accountDetailsList.get(0), null);
+        return ResponseObject.<Xs2aAccountDetailsHolder>builder()
+                   .body(xs2aAccountDetailsHolder).build();
+
+        private ResponseObject<Map<String, List<Xs2aAccountDetails>>> buildAccountDetailsListWithError(MessageError messageError) throws IOException {
         List<Xs2aAccountDetails> accountDetails = Collections.singletonList(
             new Xs2aAccountDetails(ASPSP_ACCOUNT_ID, "33333-999999999", "DE371234599997", null, null, null,
                                    null, Currency.getInstance("EUR"), "Schmidt", null,
