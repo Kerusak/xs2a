@@ -52,12 +52,12 @@ public class RedirectAisAuthorizationServiceTest {
     private RedirectAisAuthorizationService redirectAisAuthorisationService;
 
     @Mock
-    private Xs2aAisConsentService aisConsentService;
+    private Xs2aAisConsentService xs2aAisConsentService;
 
     @Test
     public void createConsentAuthorization_success() {
         // Given
-        when(aisConsentService.createAisConsentAuthorization(CONSENT_ID, ScaStatus.STARTED, PSU_ID_DATA))
+        when(xs2aAisConsentService.createAisConsentAuthorization(CONSENT_ID, ScaStatus.STARTED, PSU_ID_DATA))
             .thenReturn(Optional.of(AUTHORISATION_ID));
 
         // When
@@ -71,7 +71,7 @@ public class RedirectAisAuthorizationServiceTest {
     @Test
     public void createConsentAuthorization_wrongConsentId_fail() {
         // Given
-        when(aisConsentService.createAisConsentAuthorization(WRONG_CONSENT_ID, ScaStatus.STARTED, PSU_ID_DATA))
+        when(xs2aAisConsentService.createAisConsentAuthorization(WRONG_CONSENT_ID, ScaStatus.STARTED, PSU_ID_DATA))
             .thenReturn(Optional.empty());
 
         // When
@@ -102,7 +102,7 @@ public class RedirectAisAuthorizationServiceTest {
     @Test
     public void getAuthorisationSubResources_success() {
         // Given
-        when(aisConsentService.getAuthorisationSubResources(CONSENT_ID))
+        when(xs2aAisConsentService.getAuthorisationSubResources(CONSENT_ID))
             .thenReturn(Optional.of(STRING_LIST));
 
         // When
@@ -116,7 +116,7 @@ public class RedirectAisAuthorizationServiceTest {
     @Test
     public void getAuthorisationSubResources_wrongConsentId_fail() {
         // Given
-        when(aisConsentService.getAuthorisationSubResources(WRONG_CONSENT_ID))
+        when(xs2aAisConsentService.getAuthorisationSubResources(WRONG_CONSENT_ID))
             .thenReturn(Optional.empty());
 
         // When
@@ -129,7 +129,7 @@ public class RedirectAisAuthorizationServiceTest {
     @Test
     public void getAuthorisationScaStatus_success() {
         // Given
-        when(aisConsentService.getAuthorisationScaStatus(CONSENT_ID, AUTHORISATION_ID))
+        when(xs2aAisConsentService.getAuthorisationScaStatus(CONSENT_ID, AUTHORISATION_ID))
             .thenReturn(Optional.of(SCA_STATUS));
 
         // When
@@ -144,7 +144,7 @@ public class RedirectAisAuthorizationServiceTest {
     @Test
     public void getAuthorisationScaStatus_failure_wrongIds() {
         // Given
-        when(aisConsentService.getAuthorisationScaStatus(WRONG_CONSENT_ID, WRONG_AUTHORISATION_ID))
+        when(xs2aAisConsentService.getAuthorisationScaStatus(WRONG_CONSENT_ID, WRONG_AUTHORISATION_ID))
             .thenReturn(Optional.empty());
 
         // When
@@ -160,7 +160,7 @@ public class RedirectAisAuthorizationServiceTest {
         ScaApproach actualResponse = redirectAisAuthorisationService.getScaApproachServiceType();
 
         //Then
-        assertThat(actualResponse).isNotNull();
+        assertThat(actualResponse).isEqualTo(ScaApproach.REDIRECT);
     }
 
     private static CreateConsentAuthorizationResponse buildCreateConsentAuthResponse() {

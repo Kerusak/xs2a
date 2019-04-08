@@ -122,7 +122,7 @@ public class EmbeddedAisAuthorizationServiceTest {
     }
 
     @Test
-    public void getAccountConsentAuthorizationById_wrongIds_fail() {
+    public void getAccountConsentAuthorizationById_wrongId_fail() {
         // Given
         when(aisConsentService.getAccountConsentAuthorizationById(WRONG_AUTHORISATION_ID, WRONG_CONSENT_ID))
             .thenReturn(null);
@@ -167,7 +167,7 @@ public class EmbeddedAisAuthorizationServiceTest {
         ScaApproach actualResponse = authorizationService.getScaApproachServiceType();
 
         // Then
-        assertThat(actualResponse).isNotNull();
+        assertThat(actualResponse).isEqualTo(ScaApproach.EMBEDDED);
     }
 
     @Test
@@ -265,7 +265,7 @@ public class EmbeddedAisAuthorizationServiceTest {
     }
 
     @Test
-    public void getAuthorisationScaStatus_failure_wrongIds() {
+    public void getAuthorisationScaStatus_failure_wrongId() {
         // When
         Optional<ScaStatus> actual = authorizationService.getAuthorisationScaStatus(WRONG_CONSENT_ID, WRONG_AUTHORISATION_ID);
 

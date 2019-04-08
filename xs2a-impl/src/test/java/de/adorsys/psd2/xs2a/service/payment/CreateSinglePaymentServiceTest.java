@@ -192,8 +192,7 @@ public class CreateSinglePaymentServiceTest {
 
         //Then
         assertThat(actualResponse.hasError()).isFalse();
-        assertThat(actualResponse.getBody().getPaymentId()).isEqualTo(PAYMENT_ID);
-        assertThat(actualResponse.getBody().getTransactionStatus()).isEqualTo(TransactionStatus.RCVD);
+        assertThat(actualResponse.getBody()).isEqualTo(RESPONSE);
     }
 
 

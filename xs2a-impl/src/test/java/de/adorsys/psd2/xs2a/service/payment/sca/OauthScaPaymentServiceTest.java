@@ -22,13 +22,9 @@ public class OauthScaPaymentServiceTest {
     private static final String PRODUCT = "sepa-credit-transfers";
     private static final PsuIdData PSU_DATA = new PsuIdData("psuId", "psuIdType", "psuCorporateId", "psuCorporateIdType");
     private static final TppInfo TPP_INFO = buildTppInfo();
-    //SinglePayment
     private static final SinglePayment SINGLE_PAYMENT = new SinglePayment();
-    //PeriodicPayment
     private static final PeriodicPayment PERIODIC_PAYMENT = new PeriodicPayment();
-    //BulkPayment
     private static final BulkPayment BULK_PAYMENT = buildBulkPayment(SINGLE_PAYMENT);
-    //CommonPayment
     private static final CommonPayment COMMON_PAYMENT = buildCommonPayment();
 
     @InjectMocks

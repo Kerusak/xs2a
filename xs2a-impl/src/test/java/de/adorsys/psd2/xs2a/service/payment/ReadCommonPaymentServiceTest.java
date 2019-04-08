@@ -85,9 +85,9 @@ public class ReadCommonPaymentServiceTest {
         when(spiContextDataProvider.provideWithPsuIdData(PSU_DATA)).thenReturn(SPI_CONTEXT_DATA);
         when(spiToXs2aPaymentInfoMapper.mapToXs2aPaymentInfo(any())).thenReturn(PIS_PAYMENT_INFO);
         when(commonPaymentSpi.getPaymentById(SPI_CONTEXT_DATA, SPI_PAYMENT_INFO, SOME_ASPSP_CONSENT_DATA)).thenReturn(SpiResponse.<SpiPaymentInfo>builder()
-                                                                                                                     .aspspConsentData(SOME_ASPSP_CONSENT_DATA.respondWith("some data".getBytes()))
-                                                                                                                     .payload(SPI_PAYMENT_INFO)
-                                                                                                                     .success());
+                                                                                                                          .aspspConsentData(SOME_ASPSP_CONSENT_DATA.respondWith("some data".getBytes()))
+                                                                                                                          .payload(SPI_PAYMENT_INFO)
+                                                                                                                          .success());
     }
 
     @Test
@@ -97,17 +97,18 @@ public class ReadCommonPaymentServiceTest {
 
         //Then
         assertThat(actualResponse.hasError()).isFalse();
+        assertThat(actualResponse.getPayment()).isEqualTo(PIS_PAYMENT_INFO);
     }
 
     @Test
     public void getPayment_failed() {
         //Given
         ErrorHolder expectedError = ErrorHolder.builder(MessageErrorCode.RESOURCE_UNKNOWN_404)
-            .messages(Collections.singletonList("Payment not found"))
-            .build();
+                                        .messages(Collections.singletonList("Payment not found"))
+                                        .build();
         SpiResponse<SpiPaymentInfo> failSpiResponse = SpiResponse.<SpiPaymentInfo>builder()
-            .aspspConsentData(SOME_ASPSP_CONSENT_DATA)
-            .fail(SpiResponseStatus.LOGICAL_FAILURE);
+                                                          .aspspConsentData(SOME_ASPSP_CONSENT_DATA)
+                                                          .fail(SpiResponseStatus.LOGICAL_FAILURE);
 
         when(commonPaymentSpi.getPaymentById(SPI_CONTEXT_DATA, SPI_PAYMENT_INFO, SOME_ASPSP_CONSENT_DATA)).thenReturn(failSpiResponse);
         when(spiErrorMapper.mapToErrorHolder(failSpiResponse, ServiceType.PIS))
@@ -147,7 +148,7 @@ public class ReadCommonPaymentServiceTest {
             new SpiPsuData("", "", "", ""),
             new TppInfo(),
             UUID.randomUUID()
-            );
+        );
     }
 
     private static PisPaymentInfo getPisPaymentInfo() {

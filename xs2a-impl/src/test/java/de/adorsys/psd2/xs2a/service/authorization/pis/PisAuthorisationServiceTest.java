@@ -59,8 +59,8 @@ public class PisAuthorisationServiceTest {
     private static final List<String> SOME_LIST = Collections.emptyList();
     private static final ScaApproach SCA_APPROACH = ScaApproach.OAUTH;
     private static final PsuIdData PSU_ID_DATA = new PsuIdData("psuId", "psuIdType", "psuCorporateId", "psuCorporateIdType");
-    private static final CreatePisAuthorisationRequest CREATE_PIS_AUTHORISATION_REQUEST_CANCELLED = buildCreatePisAuthorisationRequest_by_cmsAuthorizationType_cancelled();
-    private static final CreatePisAuthorisationRequest CREATE_PIS_AUTHORISATION_REQUEST_CREATED = buildCreatePisAuthorisationRequest_by_cmsAuthorizationType_created();
+    private static final CreatePisAuthorisationRequest CREATE_PIS_AUTHORISATION_REQUEST_CANCELLED = buildCreatePisAuthorisationRequestCancelled();
+    private static final CreatePisAuthorisationRequest CREATE_PIS_AUTHORISATION_REQUEST_CREATED = buildCreatePisAuthorisationRequestCreated();
     private static final CreatePisAuthorisationResponse CREATE_PIS_AUTHORISATION_RESPONSE = new CreatePisAuthorisationResponse(AUTHORISATION_ID);
     private static final Xs2aUpdatePisCommonPaymentPsuDataRequest XS2A_UPDATE_PIS_COMMON_PAYMENT_PSU_DATA_REQUEST = buildXs2aUpdatePisCommonPaymentPsuDataRequest();
     private static final GetPisAuthorisationResponse GET_PIS_AUTHORISATION_RESPONSE = buildGetPisAuthorisationResponse();
@@ -177,7 +177,7 @@ public class PisAuthorisationServiceTest {
     }
 
     @Test
-    public void createPisAuthorisationCancellation_wrongCreatePisAuthResponse_fail() {
+    public void createPisAuthorisationCancellation_wrongId_fail() {
         // Given
         when(scaApproachResolver.resolveScaApproach())
             .thenReturn(SCA_APPROACH);
@@ -283,14 +283,12 @@ public class PisAuthorisationServiceTest {
         assertFalse(actual.isPresent());
     }
 
-    private static CreatePisAuthorisationRequest buildCreatePisAuthorisationRequest_by_cmsAuthorizationType_cancelled() {
-        CreatePisAuthorisationRequest request = new CreatePisAuthorisationRequest(CmsAuthorisationType.CANCELLED, PSU_ID_DATA, SCA_APPROACH);
-        return request;
+    private static CreatePisAuthorisationRequest buildCreatePisAuthorisationRequestCancelled() {
+        return new CreatePisAuthorisationRequest(CmsAuthorisationType.CANCELLED, PSU_ID_DATA, SCA_APPROACH);
     }
 
-    private static CreatePisAuthorisationRequest buildCreatePisAuthorisationRequest_by_cmsAuthorizationType_created() {
-        CreatePisAuthorisationRequest request = new CreatePisAuthorisationRequest(CmsAuthorisationType.CREATED, PSU_ID_DATA, SCA_APPROACH);
-        return request;
+    private static CreatePisAuthorisationRequest buildCreatePisAuthorisationRequestCreated() {
+        return new CreatePisAuthorisationRequest(CmsAuthorisationType.CREATED, PSU_ID_DATA, SCA_APPROACH);
     }
 
     private static Xs2aUpdatePisCommonPaymentPsuDataRequest buildXs2aUpdatePisCommonPaymentPsuDataRequest() {

@@ -21,6 +21,8 @@ import de.adorsys.psd2.xs2a.core.profile.PaymentType;
 import de.adorsys.psd2.xs2a.core.profile.ScaApproach;
 import de.adorsys.psd2.xs2a.core.psu.PsuIdData;
 import de.adorsys.psd2.xs2a.core.sca.ScaStatus;
+import de.adorsys.psd2.xs2a.domain.ErrorHolder;
+import de.adorsys.psd2.xs2a.domain.MessageErrorCode;
 import de.adorsys.psd2.xs2a.domain.consent.Xs2aAuthorisationSubResources;
 import de.adorsys.psd2.xs2a.domain.consent.Xs2aCreatePisAuthorisationResponse;
 import de.adorsys.psd2.xs2a.domain.consent.Xs2aCreatePisCancellationAuthorisationResponse;
@@ -28,6 +30,7 @@ import de.adorsys.psd2.xs2a.domain.consent.Xs2aPaymentCancellationAuthorisationS
 import de.adorsys.psd2.xs2a.domain.consent.pis.Xs2aUpdatePisCommonPaymentPsuDataRequest;
 import de.adorsys.psd2.xs2a.domain.consent.pis.Xs2aUpdatePisCommonPaymentPsuDataResponse;
 import de.adorsys.psd2.xs2a.service.mapper.consent.Xs2aPisCommonPaymentMapper;
+import de.adorsys.psd2.xs2a.service.mapper.psd2.ErrorType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -50,6 +53,7 @@ public class RedirectPisScaAuthorisationServiceTest {
     private static final String WRONG_AUTHORISATION_ID = "wrong authorisation id";
     private static final String CANCELLATION_AUTHORISATION_ID = "dd5d766f-eeb7-4efe-b730-24d5ed53f537";
     private static final String WRONG_CANCELLATION_AUTHORISATION_ID = "wrong cancellation authorisation id";
+    private static final String MESSAGE_ERROR_NO_PSU = "Please provide the PSU identification data";
     private static final ScaStatus SCA_STATUS = ScaStatus.RECEIVED;
     private static final List<String> STRING_LIST = Collections.singletonList(PAYMENT_ID);
     private static final Xs2aAuthorisationSubResources XS2A_AUTHORISATION_SUB_RESOURCES = new Xs2aAuthorisationSubResources(STRING_LIST);
@@ -87,7 +91,7 @@ public class RedirectPisScaAuthorisationServiceTest {
     }
 
     @Test
-    public void createCommonPaymentAuthorisation_wrongCreatePisAuthResponse_fail() {
+    public void createCommonPaymentAuthorisation_wrongId_fail() {
         // Given
         when(pisAuthorisationService.createPisAuthorisation(WRONG_PAYMENT_ID, PSU_ID_DATA))
             .thenReturn(WRONG_CREATE_PIS_AUTHORISATION_RESPONSE);
@@ -115,16 +119,17 @@ public class RedirectPisScaAuthorisationServiceTest {
     }
 
     @Test
-    public void updateCommonPaymentPsuData_emptyUpdPisCommonPsuDataResponse_fail() {
+    public void updateCommonPaymentPsuData_fail() {
         // Given
+        Xs2aUpdatePisCommonPaymentPsuDataResponse errorResponse = buildErrorXs2aUpdatePisCommonPaymentPsuDataResponse();
         when(pisAuthorisationService.updatePisAuthorisation(XS2A_UPDATE_PIS_COMMON_PAYMENT_PSU_DATA_REQUEST, ScaApproach.REDIRECT))
-            .thenReturn(null);
+            .thenReturn(errorResponse);
 
         // When
         Xs2aUpdatePisCommonPaymentPsuDataResponse actualResponse = redirectPisScaAuthorisationService.updateCommonPaymentPsuData(XS2A_UPDATE_PIS_COMMON_PAYMENT_PSU_DATA_REQUEST);
 
         // Then
-        assertThat(actualResponse).isNull();
+        assertThat(actualResponse).isEqualTo(errorResponse);
     }
 
     @Test
@@ -144,7 +149,7 @@ public class RedirectPisScaAuthorisationServiceTest {
     }
 
     @Test
-    public void createCommonPaymentCancellationAuthorisation_wrongCreatePisAuthResponse_fail() {
+    public void createCommonPaymentCancellationAuthorisation_fail() {
         // Given
         when(pisAuthorisationService.createPisAuthorisationCancellation(WRONG_PAYMENT_ID, PSU_ID_DATA))
             .thenReturn(WRONG_CREATE_PIS_AUTHORISATION_RESPONSE);
@@ -281,6 +286,16 @@ public class RedirectPisScaAuthorisationServiceTest {
         ScaApproach actualResponse = redirectPisScaAuthorisationService.getScaApproachServiceType();
 
         // Then
-        assertThat(actualResponse).isNotNull();
+        assertThat(actualResponse).isEqualTo(ScaApproach.REDIRECT);
+    }
+
+
+    private Xs2aUpdatePisCommonPaymentPsuDataResponse buildErrorXs2aUpdatePisCommonPaymentPsuDataResponse(){
+        ErrorHolder errorHolder = ErrorHolder.builder(MessageErrorCode.FORMAT_ERROR)
+                                      .errorType(ErrorType.PIS_400)
+                                      .messages(Collections.singletonList(MESSAGE_ERROR_NO_PSU))
+                                      .build();
+        return new Xs2aUpdatePisCommonPaymentPsuDataResponse(errorHolder);
+
     }
 }

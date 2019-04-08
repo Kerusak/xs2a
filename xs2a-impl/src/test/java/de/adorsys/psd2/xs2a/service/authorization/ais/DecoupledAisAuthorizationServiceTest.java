@@ -12,6 +12,7 @@ import de.adorsys.psd2.xs2a.core.tpp.TppRole;
 import de.adorsys.psd2.xs2a.domain.consent.*;
 import de.adorsys.psd2.xs2a.service.authorization.ais.stage.embedded.AisScaAuthenticatedStage;
 import de.adorsys.psd2.xs2a.service.consent.Xs2aAisConsentService;
+import de.adorsys.psd2.xs2a.service.mapper.consent.Xs2aAisConsentMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -51,6 +52,8 @@ public class DecoupledAisAuthorizationServiceTest {
 
     @Mock
     private Xs2aAisConsentService aisConsentService;
+    @Mock
+    private Xs2aAisConsentMapper aisConsentMapper;
     @Mock
     private AisScaStageAuthorisationFactory scaStageAuthorisationFactory;
     @Mock

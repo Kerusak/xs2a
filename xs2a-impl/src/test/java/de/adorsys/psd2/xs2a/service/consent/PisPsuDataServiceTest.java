@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class PisPsuDataServiceTest {
     private static final String PAYMENT_ID = "d6cb50e5-bb88-4bbf-a5c1-42ee1ed1df2c";
+    private static final String WRONG_ID = "wrong id";
     private static final List<PsuIdData> LIST_PSU_DATA = getListPisPayment();
 
     @InjectMocks
@@ -42,11 +43,11 @@ public class PisPsuDataServiceTest {
     @Test
     public void getPsuDataByPaymentId_failed() {
         //Given
-        when(pisCommonPaymentServiceEncrypted.getPsuDataListByPaymentId(PAYMENT_ID))
+        when(pisCommonPaymentServiceEncrypted.getPsuDataListByPaymentId(WRONG_ID))
             .thenReturn(Optional.empty());
 
         //When
-        List<PsuIdData> actualResponse = pisPsuDataService.getPsuDataByPaymentId(PAYMENT_ID);
+        List<PsuIdData> actualResponse = pisPsuDataService.getPsuDataByPaymentId(WRONG_ID);
 
         //Then
         assertThat(actualResponse).isNull();

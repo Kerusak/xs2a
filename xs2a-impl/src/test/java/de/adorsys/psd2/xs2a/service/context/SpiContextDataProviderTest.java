@@ -39,9 +39,24 @@ public class SpiContextDataProviderTest {
     @Mock
     private RequestProviderService requestProviderService;
 
+    @Test
+    public void provide_success() {
+        //Given
+        when(tppService.getTppInfo())
+            .thenReturn(TPP_INFO);
+        when(requestProviderService.getRequestId())
+            .thenReturn(X_REQUEST_ID);
+
+        //When
+        SpiContextData actualResponse = spiContextDataProvider.provide();
+
+        //Then
+        assertThat(actualResponse).isNotNull();
+        assertThat(actualResponse).isEqualTo(SPI_CONTEXT_DATA);
+    }
 
     @Test
-    public void provideWithPsuIdData() {
+    public void provideWithPsuIdData_success() {
         //Given
         when(tppService.getTppInfo())
             .thenReturn(TPP_INFO);
@@ -57,7 +72,7 @@ public class SpiContextDataProviderTest {
     }
 
     @Test
-    public void provide() {
+    public void provide_withParameters_success() {
         //Given
         when(psuDataMapper.mapToSpiPsuData(PSU_DATA))
             .thenReturn(SPI_PSU_DATA);

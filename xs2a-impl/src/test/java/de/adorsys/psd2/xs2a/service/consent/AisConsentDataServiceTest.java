@@ -36,7 +36,7 @@ public class AisConsentDataServiceTest {
     }
 
     @Test
-    public void getAspspConsentDataByConsentId_with_nullAspspConsentData() {
+    public void getAspspConsentDataByConsentId_emptyAspspConsentData_success() {
         //Given
         when(aspspDataService.readAspspConsentData("some consent id")).thenReturn(Optional.empty());
 

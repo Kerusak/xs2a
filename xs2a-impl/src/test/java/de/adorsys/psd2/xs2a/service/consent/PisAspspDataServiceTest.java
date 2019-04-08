@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 public class PisAspspDataServiceTest {
     private static final String PAYMENT_ID = "d6cb50e5-bb88-4bbf-a5c1-42ee1ed1df2c";
     private static final String ENCRYPTED_ID = "3278921mxl-n2131-13nw";
+    private static final String WRONG_ID = "wrong id";
     private static final AspspConsentData ASPSP_CONSENT_DATA = new AspspConsentData(new byte[16], PAYMENT_ID);
     private static final AspspConsentData ASPSP_CONSENT_DATA_NULL = new AspspConsentData(null, PAYMENT_ID);
 
@@ -43,7 +44,7 @@ public class PisAspspDataServiceTest {
     }
 
     @Test
-    public void getAspspConsentData_with_nullAspspConsentData() {
+    public void getAspspConsentData_emptyAspspConsentData_success() {
         //Given
         when(aspspDataService.readAspspConsentData(PAYMENT_ID))
             .thenReturn(Optional.empty());
@@ -71,11 +72,11 @@ public class PisAspspDataServiceTest {
     @Test
     public void getInternalPaymentIdByEncryptedString_failed() {
         //Given
-        when(pisCommonPaymentServiceEncrypted.getDecryptedId(ENCRYPTED_ID))
+        when(pisCommonPaymentServiceEncrypted.getDecryptedId(WRONG_ID))
             .thenReturn(Optional.empty());
 
         //When
-        String actualResponse = pisAspspDataService.getInternalPaymentIdByEncryptedString(ENCRYPTED_ID);
+        String actualResponse = pisAspspDataService.getInternalPaymentIdByEncryptedString(WRONG_ID);
 
         //Then
         assertThat(actualResponse).isNull();

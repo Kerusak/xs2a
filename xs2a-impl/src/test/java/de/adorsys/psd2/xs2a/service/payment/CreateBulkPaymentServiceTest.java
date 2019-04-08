@@ -60,7 +60,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CreateBulkPaymentServiceTest<resp> {
+public class CreateBulkPaymentServiceTest {
     private static final Currency EUR_CURRENCY = Currency.getInstance("EUR");
     private static final String PAYMENT_ID = "d6cb50e5-bb88-4bbf-a5c1-42ee1ed1df2c";
     private static final String IBAN = "DE123456789";
@@ -193,8 +193,7 @@ public class CreateBulkPaymentServiceTest<resp> {
 
         //Then
         assertThat(actualResponse.hasError()).isFalse();
-        assertThat(actualResponse.getBody().getPaymentId()).isEqualTo(PAYMENT_ID);
-        assertThat(actualResponse.getBody().getTransactionStatus()).isEqualTo(TransactionStatus.RCVD);
+        assertThat(actualResponse.getBody()).isEqualTo(RESPONSE);
     }
 
     private static BulkPayment buildBulkPayment() {

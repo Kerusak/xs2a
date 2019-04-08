@@ -99,10 +99,6 @@ public class ReadBulkPaymentServiceTest {
     @Test
     public void getPayment_updatePaymentStatusAfterSpiService_updatePaymentStatus_failed() {
         //Given
-        ErrorHolder expectedError = ErrorHolder.builder(MessageErrorCode.FORMAT_ERROR)
-            .messages(Collections.singletonList("Payment is finalised already, so its status cannot be changed"))
-            .build();
-
         when(updatePaymentStatusAfterSpiService.updatePaymentStatus(ASPSP_CONSENT_DATA.getConsentId(), BULK_PAYMENT.getTransactionStatus()))
             .thenReturn(false);
         when(requestProviderService.getRequestId()).thenReturn(X_REQUEST_ID);
@@ -121,11 +117,11 @@ public class ReadBulkPaymentServiceTest {
     public void getPayment_bulkPaymentSpi_getPaymentById_failed() {
         //Given
         SpiResponse<SpiBulkPayment> spiResponseError = SpiResponse.<SpiBulkPayment>builder()
-            .aspspConsentData(ASPSP_CONSENT_DATA)
-            .fail(SpiResponseStatus.LOGICAL_FAILURE);
+                                                           .aspspConsentData(ASPSP_CONSENT_DATA)
+                                                           .fail(SpiResponseStatus.LOGICAL_FAILURE);
         ErrorHolder expectedError = ErrorHolder.builder(MessageErrorCode.RESOURCE_UNKNOWN_404)
-            .messages(Collections.singletonList("Payment not found"))
-            .build();
+                                        .messages(Collections.singletonList("Payment not found"))
+                                        .build();
 
         when(bulkPaymentSpi.getPaymentById(SPI_CONTEXT_DATA, SPI_BULK_PAYMENT, ASPSP_CONSENT_DATA))
             .thenReturn(spiResponseError);
@@ -145,8 +141,8 @@ public class ReadBulkPaymentServiceTest {
     public void getPayment_spiPaymentFactory_createSpiBulkPayment_failed() {
         //Given
         ErrorHolder expectedError = ErrorHolder.builder(MessageErrorCode.RESOURCE_UNKNOWN_404)
-            .messages(Collections.singletonList("Payment not found"))
-            .build();
+                                        .messages(Collections.singletonList("Payment not found"))
+                                        .build();
 
         when(spiPaymentFactory.createSpiBulkPayment(PIS_PAYMENTS, PRODUCT))
             .thenReturn(Optional.empty());
@@ -174,8 +170,8 @@ public class ReadBulkPaymentServiceTest {
 
     private static SpiResponse<SpiBulkPayment> buildSpiResponse() {
         return SpiResponse.<SpiBulkPayment>builder()
-            .aspspConsentData(ASPSP_CONSENT_DATA)
-            .payload(SPI_BULK_PAYMENT)
-            .success();
+                   .aspspConsentData(ASPSP_CONSENT_DATA)
+                   .payload(SPI_BULK_PAYMENT)
+                   .success();
     }
 }
