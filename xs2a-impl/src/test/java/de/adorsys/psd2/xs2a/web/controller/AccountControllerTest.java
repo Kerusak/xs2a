@@ -23,6 +23,7 @@ import de.adorsys.psd2.model.AccountList;
 import de.adorsys.psd2.model.AccountReport;
 import de.adorsys.psd2.model.ReadAccountBalanceResponse200;
 import de.adorsys.psd2.xs2a.component.JsonConverter;
+import de.adorsys.psd2.xs2a.core.profile.AccountReference;
 import de.adorsys.psd2.xs2a.domain.*;
 import de.adorsys.psd2.xs2a.domain.account.*;
 import de.adorsys.psd2.xs2a.domain.code.BankTransactionCode;
@@ -48,9 +49,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Currency;
-import java.util.List;
+import java.util.*;
 
 import static de.adorsys.psd2.xs2a.domain.TppMessageInformation.of;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -119,7 +118,7 @@ public class AccountControllerTest {
     public void readAccountDetails_wrongId_fail() throws IOException {
         // Given
         boolean withBalance = true;
-        ResponseObject<Xs2aAccountDetails> responseEntity = buildXs2aAccountDetailsWithError(MESSAGE_ERROR_AIS_404);
+        ResponseObject<Xs2aAccountDetailsHolder> responseEntity = buildXs2aAccountDetailsWithError(MESSAGE_ERROR_AIS_404);
         when(accountService.getAccountDetails(WRONG_CONSENT_ID, WRONG_ACCOUNT_ID, withBalance))
             .thenReturn(responseEntity);
         when(responseErrorMapper.generateErrorResponse(MESSAGE_ERROR_AIS_404))
@@ -158,9 +157,11 @@ public class AccountControllerTest {
     public void getAccountList_wrongId_fail() throws IOException {
         // Given
         boolean withBalance = true;
-        ResponseObject<Map<String, List<Xs2aAccountDetails>>> responseEntity = buildAccountDetailsListWithError(MESSAGE_ERROR_AIS_404);
+        ResponseObject<Xs2aAccountListHolder> responseEntity = getXs2aAccountListHolderWithError(MESSAGE_ERROR_AIS_404);
+
         when(accountService.getAccountList(WRONG_CONSENT_ID, withBalance))
             .thenReturn(responseEntity);
+
         when(responseErrorMapper.generateErrorResponse(MESSAGE_ERROR_AIS_404))
             .thenReturn(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 
@@ -349,8 +350,9 @@ public class AccountControllerTest {
         Xs2aAccountDetailsHolder xs2aAccountDetailsHolder = new Xs2aAccountDetailsHolder(accountDetailsList.get(0), null);
         return ResponseObject.<Xs2aAccountDetailsHolder>builder()
                    .body(xs2aAccountDetailsHolder).build();
+    }
 
-        private ResponseObject<Map<String, List<Xs2aAccountDetails>>> buildAccountDetailsListWithError(MessageError messageError) throws IOException {
+    private ResponseObject<Map<String, List<Xs2aAccountDetails>>> buildAccountDetailsListWithError(MessageError messageError) throws IOException {
         List<Xs2aAccountDetails> accountDetails = Collections.singletonList(
             new Xs2aAccountDetails(ASPSP_ACCOUNT_ID, "33333-999999999", "DE371234599997", null, null, null,
                                    null, Currency.getInstance("EUR"), "Schmidt", null,
@@ -363,17 +365,14 @@ public class AccountControllerTest {
                    .body(result).build();
     }
 
-    private ResponseObject<Xs2aAccountDetails> getXs2aAccountDetails() throws IOException {
-        Map<String, List<Xs2aAccountDetails>> map = getXs2aAccountDetailsList().getBody();
-        return ResponseObject.<Xs2aAccountDetails>builder()
-                   .body(map.get("accountList").get(0)).build();
+    private ResponseObject<Xs2aAccountDetailsHolder> buildXs2aAccountDetailsWithError(MessageError messageError) {
+        return ResponseObject.<Xs2aAccountDetailsHolder>builder().fail(messageError)
+                   .build();
     }
 
-    private ResponseObject<Xs2aAccountDetails> buildXs2aAccountDetailsWithError(MessageError messageError) throws IOException {
-        Map<String, List<Xs2aAccountDetails>> map = getXs2aAccountDetailsList().getBody();
-        return ResponseObject.<Xs2aAccountDetails>builder()
-                   .fail(messageError)
-                   .body(map.get("accountList").get(0)).build();
+    private ResponseObject<Xs2aAccountListHolder> getXs2aAccountListHolderWithError(MessageError messageError) {
+        return ResponseObject.<Xs2aAccountListHolder>builder().fail(messageError)
+                   .build();
     }
 
     private ResponseObject<AccountDetails> getAccountDetails() throws IOException {

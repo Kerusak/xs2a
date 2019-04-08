@@ -46,10 +46,10 @@ public class OauthAisAuthorizationServiceTest {
     @Test
     public void getAccountConsentAuthorizationById_success() {
         //When
-        AccountConsentAuthorization actualResponse = oauthAisAuthorizationService.getAccountConsentAuthorizationById(AUTHORISATION_ID, CONSENT_ID);
+        Optional<AccountConsentAuthorization>  actualResponse = oauthAisAuthorizationService.getAccountConsentAuthorizationById(AUTHORISATION_ID, CONSENT_ID);
 
         //Then
-        assertThat(actualResponse).isEqualTo(ACCOUNT_CONSENT_AUTHORIZATION);
+        assertThat(actualResponse.isPresent()).isFalse();
     }
 
     @Test

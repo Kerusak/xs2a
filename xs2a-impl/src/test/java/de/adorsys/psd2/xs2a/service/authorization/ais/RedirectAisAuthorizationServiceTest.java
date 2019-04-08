@@ -93,10 +93,10 @@ public class RedirectAisAuthorizationServiceTest {
     @Test
     public void getAccountConsentAuthorizationById_success() {
         // When
-        AccountConsentAuthorization actualResponse = redirectAisAuthorisationService.getAccountConsentAuthorizationById(AUTHORISATION_ID, CONSENT_ID);
+        Optional<AccountConsentAuthorization>  actualResponse = redirectAisAuthorisationService.getAccountConsentAuthorizationById(AUTHORISATION_ID, CONSENT_ID);
 
         // Then
-        assertThat(actualResponse).isNull();
+        assertThat(actualResponse.isPresent()).isFalse();
     }
 
     @Test

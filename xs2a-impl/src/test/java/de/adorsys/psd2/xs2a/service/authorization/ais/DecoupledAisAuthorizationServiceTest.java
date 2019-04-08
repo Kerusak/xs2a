@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -63,7 +64,7 @@ public class DecoupledAisAuthorizationServiceTest {
     public void createConsentAuthorization_success() {
         // Given
         when(aisConsentService.getAccountConsentById(CONSENT_ID))
-            .thenReturn(ACCOUNT_CONSENT);
+            .thenReturn(Optional.of(ACCOUNT_CONSENT));
         when(aisConsentService.createAisConsentAuthorization(CONSENT_ID, SCA_STATUS, PSU_DATA))
             .thenReturn(Optional.of(AUTHORISATION_ID));
 
@@ -79,7 +80,7 @@ public class DecoupledAisAuthorizationServiceTest {
     public void createConsentAuthorization_wrongConsentId_fail() {
         // Given
         when(aisConsentService.getAccountConsentById(WRONG_CONSENT_ID))
-            .thenReturn(null);
+            .thenReturn(Optional.empty());
 
         // When
         Optional<CreateConsentAuthorizationResponse> actualResponse = decoupledAisAuthorizationService.createConsentAuthorization(PSU_DATA, WRONG_CONSENT_ID);
@@ -107,26 +108,27 @@ public class DecoupledAisAuthorizationServiceTest {
     public void getAccountConsentAuthorizationById_success() {
         // Given
         when(aisConsentService.getAccountConsentAuthorizationById(AUTHORISATION_ID, CONSENT_ID))
-            .thenReturn(ACCOUNT_CONSENT_AUTHORIZATION);
+            .thenReturn(Optional.of(ACCOUNT_CONSENT_AUTHORIZATION));
 
         // When
-        AccountConsentAuthorization actualResponse = decoupledAisAuthorizationService.getAccountConsentAuthorizationById(AUTHORISATION_ID, CONSENT_ID);
+        Optional<AccountConsentAuthorization> actualResponse = decoupledAisAuthorizationService.getAccountConsentAuthorizationById(AUTHORISATION_ID, CONSENT_ID);
 
         // Then
-        assertThat(actualResponse).isEqualTo(ACCOUNT_CONSENT_AUTHORIZATION);
+        assertThat(actualResponse.isPresent()).isTrue();
+        assertThat(actualResponse.get()).isEqualTo(ACCOUNT_CONSENT_AUTHORIZATION);
     }
 
     @Test
     public void getAccountConsentAuthorizationById_wrongIds_fail() {
         // Given
         when(aisConsentService.getAccountConsentAuthorizationById(WRONG_AUTHORISATION_ID, WRONG_CONSENT_ID))
-            .thenReturn(null);
+            .thenReturn(Optional.empty());
 
         // When
-        AccountConsentAuthorization actualResponse = decoupledAisAuthorizationService.getAccountConsentAuthorizationById(WRONG_AUTHORISATION_ID, WRONG_CONSENT_ID);
+        Optional<AccountConsentAuthorization> actualResponse = decoupledAisAuthorizationService.getAccountConsentAuthorizationById(WRONG_AUTHORISATION_ID, WRONG_CONSENT_ID);
 
         // Then
-        assertThat(actualResponse).isNull();
+        assertThat(actualResponse.isPresent()).isFalse();
     }
 
     @Test
@@ -217,10 +219,6 @@ public class DecoupledAisAuthorizationServiceTest {
     }
 
     private static AccountConsent buildConsent(String id) {
-        return new AccountConsent(id, buildEmptyAccountAccess(), false, LocalDate.now(), 4, null, ConsentStatus.VALID, false, false, null, buildTppInfo(), AisConsentRequestType.GLOBAL, false, Collections.emptyList(), 0);
-    }
-
-    private static Xs2aAccountAccess buildEmptyAccountAccess() {
-        return new Xs2aAccountAccess(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), AccountAccessType.ALL_ACCOUNTS_WITH_BALANCES, AccountAccessType.ALL_ACCOUNTS_WITH_BALANCES);
+        return  new AccountConsent(id, new Xs2aAccountAccess(null, null, null, null, null), false, LocalDate.now(), 4, LocalDate.now(), ConsentStatus.VALID, false, false, null, null, AisConsentRequestType.GLOBAL, false, Collections.emptyList(), OffsetDateTime.now(), 0);
     }
 }

@@ -43,6 +43,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -134,10 +135,11 @@ public class Xs2aAisConsentServiceTest {
             .thenReturn(ACCOUNT_CONSENT);
 
         //When
-        AccountConsent actualResponse = xs2aAisConsentService.getAccountConsentById(CONSENT_ID);
+        Optional<AccountConsent> actualResponse = xs2aAisConsentService.getAccountConsentById(CONSENT_ID);
 
         //Then
-        assertThat(actualResponse).isEqualTo(ACCOUNT_CONSENT);
+        assertThat(actualResponse.isPresent()).isTrue();
+        assertThat(actualResponse.get()).isEqualTo(ACCOUNT_CONSENT);
     }
 
     @Test
@@ -147,10 +149,10 @@ public class Xs2aAisConsentServiceTest {
             .thenReturn(Optional.empty());
 
         //When
-        AccountConsent actualResponse = xs2aAisConsentService.getAccountConsentById(CONSENT_ID);
+        Optional<AccountConsent> actualResponse = xs2aAisConsentService.getAccountConsentById(CONSENT_ID);
 
         //Then
-        assertThat(actualResponse).isNull();
+        assertThat(actualResponse.isPresent()).isFalse();
     }
 
     @Test
@@ -188,10 +190,11 @@ public class Xs2aAisConsentServiceTest {
             .thenReturn(Optional.of(CONSENT_STATUS));
 
         //When
-        ConsentStatus actualResponse = xs2aAisConsentService.getAccountConsentStatusById(CONSENT_ID);
+        Optional<ConsentStatus> actualResponse = xs2aAisConsentService.getAccountConsentStatusById(CONSENT_ID);
 
         //Then
-        assertThat(actualResponse).isEqualTo(CONSENT_STATUS);
+        assertThat(actualResponse.isPresent()).isTrue();
+        assertThat(actualResponse.get()).isEqualTo(CONSENT_STATUS);
     }
 
     @Test
@@ -201,10 +204,10 @@ public class Xs2aAisConsentServiceTest {
             .thenReturn(Optional.empty());
 
         //When
-        ConsentStatus actualResponse = xs2aAisConsentService.getAccountConsentStatusById(CONSENT_ID);
+        Optional<ConsentStatus> actualResponse = xs2aAisConsentService.getAccountConsentStatusById(CONSENT_ID);
 
         //Then
-        assertThat(actualResponse).isNull();
+        assertThat(actualResponse.isPresent()).isFalse();
     }
 
     @Test
@@ -277,10 +280,11 @@ public class Xs2aAisConsentServiceTest {
             .thenReturn(ACCOUNT_CONSENT_AUTHORIZATION);
 
         //When
-        AccountConsentAuthorization actualResponse = xs2aAisConsentService.getAccountConsentAuthorizationById(AUTHORISATION_ID, CONSENT_ID);
+        Optional<AccountConsentAuthorization> actualResponse = xs2aAisConsentService.getAccountConsentAuthorizationById(AUTHORISATION_ID, CONSENT_ID);
 
         //Then
-        assertThat(actualResponse).isEqualTo(ACCOUNT_CONSENT_AUTHORIZATION);
+        assertThat(actualResponse.isPresent()).isTrue();
+        assertThat(actualResponse.get()).isEqualTo(ACCOUNT_CONSENT_AUTHORIZATION);
     }
 
     @Test
@@ -290,10 +294,10 @@ public class Xs2aAisConsentServiceTest {
             .thenReturn(Optional.empty());
 
         //When
-        AccountConsentAuthorization actualResponse = xs2aAisConsentService.getAccountConsentAuthorizationById(AUTHORISATION_ID, CONSENT_ID);
+        Optional<AccountConsentAuthorization> actualResponse = xs2aAisConsentService.getAccountConsentAuthorizationById(AUTHORISATION_ID, CONSENT_ID);
 
         //Then
-        assertThat(actualResponse).isNull();
+        assertThat(actualResponse.isPresent()).isFalse();
     }
 
     @Test
@@ -430,7 +434,7 @@ public class Xs2aAisConsentServiceTest {
     }
 
     private static AccountConsent createConsent(String id) {
-        return new AccountConsent(id, createEmptyAccountAccess(), false, LocalDate.now(), 4, null, ConsentStatus.VALID, false, false, null, buildTppInfo(), AisConsentRequestType.GLOBAL, false, Collections.emptyList(), 0);
+        return  new AccountConsent(id, new Xs2aAccountAccess(null, null, null, null, null), false, LocalDate.now(), 4, LocalDate.now(), ConsentStatus.VALID, false, false, null, null, AisConsentRequestType.GLOBAL, false, Collections.emptyList(), OffsetDateTime.now(), 0);
     }
 
     private static Xs2aAccountAccess createEmptyAccountAccess() {

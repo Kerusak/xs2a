@@ -132,7 +132,7 @@ public class PisAuthorisationServiceTest {
             .thenReturn(pisScaStartAuthorisationStage);
         when(pisScaStartAuthorisationStage.apply(XS2A_UPDATE_PIS_COMMON_PAYMENT_PSU_DATA_REQUEST, GET_PIS_AUTHORISATION_RESPONSE))
             .thenReturn(STAGE_RESPONSE);
-        when(pisCommonPaymentMapper.mapToCmsUpdateCommonPaymentPsuDataReq(XS2A_UPDATE_PIS_COMMON_PAYMENT_PSU_DATA_REQUEST, STAGE_RESPONSE))
+        when(pisCommonPaymentMapper.mapToCmsUpdateCommonPaymentPsuDataReq(STAGE_RESPONSE))
             .thenReturn(UPDATE_PIS_COMMON_PAYMENT_PSU_DATA_REQUEST);
 
         // When
@@ -151,7 +151,7 @@ public class PisAuthorisationServiceTest {
             .thenReturn(pisScaStartAuthorisationStage);
         when(pisScaStartAuthorisationStage.apply(XS2A_UPDATE_PIS_COMMON_PAYMENT_PSU_DATA_REQUEST, GET_PIS_AUTHORISATION_RESPONSE))
             .thenReturn(STAGE_RESPONSE);
-        when(pisCommonPaymentMapper.mapToCmsUpdateCommonPaymentPsuDataReq(XS2A_UPDATE_PIS_COMMON_PAYMENT_PSU_DATA_REQUEST, STAGE_RESPONSE))
+        when(pisCommonPaymentMapper.mapToCmsUpdateCommonPaymentPsuDataReq(STAGE_RESPONSE))
             .thenReturn(UPDATE_PIS_COMMON_PAYMENT_PSU_DATA_REQUEST);
 
         // When

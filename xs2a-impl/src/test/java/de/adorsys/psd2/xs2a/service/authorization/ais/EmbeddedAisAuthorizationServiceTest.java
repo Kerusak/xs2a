@@ -20,12 +20,10 @@ import de.adorsys.psd2.xs2a.config.factory.AisScaStageAuthorisationFactory;
 import de.adorsys.psd2.xs2a.core.profile.ScaApproach;
 import de.adorsys.psd2.xs2a.core.psu.PsuIdData;
 import de.adorsys.psd2.xs2a.core.sca.ScaStatus;
-import de.adorsys.psd2.xs2a.domain.MessageErrorCode;
 import de.adorsys.psd2.xs2a.domain.consent.*;
 import de.adorsys.psd2.xs2a.service.authorization.ais.stage.embedded.AisScaStartAuthorisationStage;
 import de.adorsys.psd2.xs2a.service.consent.Xs2aAisConsentService;
 import de.adorsys.psd2.xs2a.service.mapper.consent.Xs2aAisConsentMapper;
-import de.adorsys.psd2.xs2a.service.mapper.psd2.ErrorType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -101,7 +99,7 @@ public class EmbeddedAisAuthorizationServiceTest {
     public void createConsentAuthorization_wrongConsentId_fail() {
         // Given
         when(aisConsentService.getAccountConsentById(WRONG_CONSENT_ID))
-            .thenReturn(null);
+            .thenReturn(Optional.empty());
 
         // When
         Optional<CreateConsentAuthorizationResponse> actualResponse = authorizationService.createConsentAuthorization(PSU_DATA, WRONG_CONSENT_ID);
@@ -114,26 +112,27 @@ public class EmbeddedAisAuthorizationServiceTest {
     public void getAccountConsentAuthorizationById_success() {
         // Given
         when(aisConsentService.getAccountConsentAuthorizationById(AUTHORISATION_ID, CONSENT_ID))
-            .thenReturn(consentAuthorization);
+            .thenReturn(Optional.of(consentAuthorization));
 
         // When
-        AccountConsentAuthorization actualResponse = authorizationService.getAccountConsentAuthorizationById(AUTHORISATION_ID, CONSENT_ID);
+        Optional<AccountConsentAuthorization> actualResponse = authorizationService.getAccountConsentAuthorizationById(AUTHORISATION_ID, CONSENT_ID);
 
         // Then
-        assertThat(actualResponse).isEqualTo(consentAuthorization);
+        assertThat(actualResponse.isPresent()).isTrue();
+        assertThat(actualResponse.get()).isEqualTo(consentAuthorization);
     }
 
     @Test
     public void getAccountConsentAuthorizationById_wrongId_fail() {
         // Given
         when(aisConsentService.getAccountConsentAuthorizationById(WRONG_AUTHORISATION_ID, WRONG_CONSENT_ID))
-            .thenReturn(null);
+            .thenReturn(Optional.empty());
 
         // When
-        AccountConsentAuthorization actualResponse = authorizationService.getAccountConsentAuthorizationById(WRONG_AUTHORISATION_ID, WRONG_CONSENT_ID);
+        Optional<AccountConsentAuthorization> actualResponse = authorizationService.getAccountConsentAuthorizationById(WRONG_AUTHORISATION_ID, WRONG_CONSENT_ID);
 
         // Then
-        assertThat(actualResponse).isNull();
+        assertThat(actualResponse.isPresent()).isFalse();
     }
 
     @Test
@@ -192,7 +191,7 @@ public class EmbeddedAisAuthorizationServiceTest {
 
 
     @Test
-    public void  createConsentAuthorization_wrongId_Failure() {
+    public void createConsentAuthorization_wrongId_Failure() {
         //Given
         when(aisConsentService.getAccountConsentById(WRONG_CONSENT_ID)).thenReturn(Optional.empty());
 

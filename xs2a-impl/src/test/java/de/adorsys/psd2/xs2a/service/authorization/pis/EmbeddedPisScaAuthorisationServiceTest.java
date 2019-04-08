@@ -130,7 +130,7 @@ public class EmbeddedPisScaAuthorisationServiceTest {
         Xs2aUpdatePisCommonPaymentPsuDataResponse actualResponse = embeddedPisScaAuthorisationService.updateCommonPaymentPsuData(XS2A_UPDATE_PIS_COMMON_PAYMENT_PSU_DATA_REQUEST);
 
         // Then
-        assertThat(actualResponse).isNotEqualTo(errorResponse);
+        assertThat(actualResponse).isEqualTo(errorResponse);
     }
 
     @Test
@@ -213,7 +213,7 @@ public class EmbeddedPisScaAuthorisationServiceTest {
         Xs2aUpdatePisCommonPaymentPsuDataResponse actualResponse = embeddedPisScaAuthorisationService.updateCommonPaymentCancellationPsuData(XS2A_UPDATE_PIS_COMMON_PAYMENT_PSU_DATA_REQUEST);
 
         // Then
-        assertThat(actualResponse).isNotEqualTo(errorResponse);
+        assertThat(actualResponse).isEqualTo(errorResponse);
     }
 
     @Test
@@ -306,12 +306,12 @@ public class EmbeddedPisScaAuthorisationServiceTest {
         assertThat(actualResponse).isEqualTo(ScaApproach.EMBEDDED);
     }
 
-    private Xs2aUpdatePisCommonPaymentPsuDataResponse buildErrorXs2aUpdatePisCommonPaymentPsuDataResponse(){
+    private Xs2aUpdatePisCommonPaymentPsuDataResponse buildErrorXs2aUpdatePisCommonPaymentPsuDataResponse() {
         ErrorHolder errorHolder = ErrorHolder.builder(MessageErrorCode.FORMAT_ERROR)
                                       .errorType(ErrorType.PIS_400)
                                       .messages(Collections.singletonList(MESSAGE_ERROR_NO_PSU))
                                       .build();
-        return new Xs2aUpdatePisCommonPaymentPsuDataResponse(errorHolder);
+        return new Xs2aUpdatePisCommonPaymentPsuDataResponse(errorHolder, PAYMENT_ID, AUTHORISATION_ID, PSU_ID_DATA);
 
     }
 }

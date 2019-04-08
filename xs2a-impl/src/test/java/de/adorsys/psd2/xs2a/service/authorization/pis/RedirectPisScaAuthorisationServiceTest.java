@@ -295,7 +295,7 @@ public class RedirectPisScaAuthorisationServiceTest {
                                       .errorType(ErrorType.PIS_400)
                                       .messages(Collections.singletonList(MESSAGE_ERROR_NO_PSU))
                                       .build();
-        return new Xs2aUpdatePisCommonPaymentPsuDataResponse(errorHolder);
+        return new Xs2aUpdatePisCommonPaymentPsuDataResponse(errorHolder, PAYMENT_ID, AUTHORISATION_ID, PSU_ID_DATA);
 
     }
 }
